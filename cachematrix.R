@@ -1,19 +1,11 @@
-## Put comments here that give an overall description of what your
-## functions do
+## Modified by Todd Bigelow using rdpeng's initial stem as a starting point. 
+## This set of functions uses environment (more specifically, parent envorinments)
+## to "cache" the inverse of a matrix.  It is assumed that the input matrix is 
+## always invertible.  
 
-## Write a short comment describing this function
-
-#makeCacheMatrix <- function(x = matrix()) {
-
-#}
-
-
-## Write a short comment describing this function
-
-#cacheSolve <- function(x, ...) {
-        ## Return a matrix that is the inverse of 'x'
-#}
-
+## makeCacheMatrix creates a list of functions with associated variables that
+## get saved in the environment.  These functions can be used to set or retrieve
+## the inverse of the matrix passed into the makeCacheMatrix function.
 
 makeCacheMatrix <- function(x = numeric()) {
   m <- NULL
@@ -24,9 +16,9 @@ makeCacheMatrix <- function(x = numeric()) {
     x <<- y
     m <<- NULL
   }
-  get <- function() x
-  setinverse <- function(inverse) m <<- solve(x)
-  getinverse <- function() m
+  get <- function() x    #return input matrix x
+  setinverse <- function(inverse) m <<- solve(x)  #set inverse of input matrix x
+  getinverse <- function() m     #find inverse of input matrix x
   getevn<- function() environment()
   list(set = set, get = get,
        setinverse = setinverse,
@@ -34,9 +26,13 @@ makeCacheMatrix <- function(x = numeric()) {
        getevn = getevn)
 }
 
+## cacheSolve checks to see if the inverse of the matrix is stored in the parent
+## environment.  If it is, it returns the inverted matrix.  If not, it inverts 
+## and returns it.  
+
 cacheSolve <- function(x, ...) {
   m <- x$getinverse()
-  if(!is.null(m)) {
+  if(!is.null(m)) {           #cache is available
     message("getting cached data")
     return(m)
   }
